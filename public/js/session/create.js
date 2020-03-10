@@ -6,12 +6,11 @@ var app = new Vue({
   }),
   data() {
     return {
-      colors: [
-        "indigo",
-        "warning",
-        "success",
-        "gray",
-      ],
+      window: {
+        width: 0,
+        height: 0
+      },
+      colors: ["indigo", "warning", "success", "gray"],
       slides: [
         {
           title: "Bienvenido a Prestamos Rapiditos",
@@ -46,5 +45,27 @@ var app = new Vue({
       ]
     };
   },
-  methods: {}
+  computed: {
+    centered() {
+      return this.window.width >= 960 || false;
+    }
+  },
+  created() {
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
+  },
+  mounted() {
+    Vue.nextTick().then(() => {
+			NProgress.done();		
+    });  
+  },
+  destroyed() {
+    window.removeEventListener("resize", this.handleResize);
+  },
+  methods: {
+    handleResize() {
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
+    }
+  }
 }).$mount("#app");

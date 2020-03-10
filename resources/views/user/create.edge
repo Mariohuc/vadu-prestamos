@@ -17,11 +17,16 @@
 	<!-- VUE STYLES -->
 	{{ style('libs/vuetify-2.2.14/dist/vuetify.min') }}
 	{{ style('libs/cropperjs-1.5.6/dist/cropper.min') }}
+	{{ style('libs/nprogress-0.2.0/nprogress') }}
 </head>
 
 <body>
+	{{ script('libs/nprogress-0.2.0/nprogress') }}
+	<script type="text/javascript">
+		NProgress.start();
+	</script>
 	<div id="app">
-		<v-app id="login-page">
+		<v-app id="login-page" v-cloak>
 			<v-content>
 				<v-container class="fill-height" fluid>
 					<v-row align="center" justify="center">
@@ -128,6 +133,10 @@
 		</v-app>
 	</div>
 	<style>
+		[v-cloak] {
+			display: none;
+		}
+
 		#login-page {
 			/* background-image: url('../assets/hands_joined_team.jpeg'); */
 			background-color: #4c0220;

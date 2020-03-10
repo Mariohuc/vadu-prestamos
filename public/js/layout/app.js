@@ -56,10 +56,12 @@ var app = new Vue({
       .catch(error => {
         console.log(error);
       });
-    Vue.nextTick().then(() => {
+    Vue.nextTick().then(() => {		
+			NProgress.done();		
       setTimeout(() => {
         this.overlay = false;
-      }, 500);
+			}, 500);
+			
     });
   },
   methods: {}

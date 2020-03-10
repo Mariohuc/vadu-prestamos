@@ -64,6 +64,11 @@ var app = new Vue({
       return Object.entries(this.proDistricts).length === 0;
 		}
 	},
+	mounted(){
+		Vue.nextTick().then(() => {
+			NProgress.done();		
+    });
+	},
 	created(){
 		this.$vuetify.theme.light = true;
 	},

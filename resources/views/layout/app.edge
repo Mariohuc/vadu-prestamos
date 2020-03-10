@@ -16,11 +16,16 @@
 	{{ style('libs/font-4.9.95/css/materialdesignicons.min') }}
 	<!-- VUE STYLES -->
 	{{ style('libs/vuetify-2.2.14/dist/vuetify.min') }}
+	{{ style('libs/nprogress-0.2.0/nprogress') }}
 </head>
 
 <body>
+	{{ script('libs/nprogress-0.2.0/nprogress') }}
+	<script type="text/javascript">
+		NProgress.start();
+	</script>
 	<div id="app">
-		<v-app>
+		<v-app v-cloak>
 			<v-overlay :value="overlay">
 				<v-progress-circular indeterminate size="64"></v-progress-circular>
 			</v-overlay>
@@ -91,14 +96,8 @@
 		</v-app>
 	</div>
 	<style>
-		#login-page {
-			/* background-image: url('../assets/hands_joined_team.jpeg'); */
-			background-color: #8f2c2c;
-			height: 100vh;
-			background-position: center;
-			background-repeat: no-repeat;
-			background-size: cover;
-			position: relative;
+		[v-cloak] {
+			display: none;
 		}
 	</style>
 	<!-- VUE -->

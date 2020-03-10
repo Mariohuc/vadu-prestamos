@@ -16,13 +16,18 @@
 	{{ style('libs/font-4.9.95/css/materialdesignicons.min') }}
 	<!-- Custom styles for this template-->
 	{{ style('libs/vuetify-2.2.14/dist/vuetify.min') }}
+	{{ style('libs/nprogress-0.2.0/nprogress') }}
 </head>
 
 <body>
+	{{ script('libs/nprogress-0.2.0/nprogress') }}
+	<script type="text/javascript">
+		NProgress.start();
+	</script>
 	<div id="app">
-		<v-app id="login-page">
+		<v-app id="login-page" v-cloak>
 			<v-content>
-				<v-container class="fill-height" fluid>
+				<v-container :fill-height="centered" :fluid="centered">
 					<v-row align="center" justify="center">
 						<v-col sm="10" md="8">
 							<v-card class="elevation-12">
@@ -61,6 +66,8 @@
 											<v-card-text class="pt-1 pb-0">
 												<v-form action="/login" method="POST" ref="form" v-model="valid" class="text-center">
 													{{ csrfField() }}
+													<v-text-field :value="window.width" required>
+													</v-text-field>
 													<v-text-field name="dni_id" v-model="dni" :rules="dniRules" label="DNI" required>
 													</v-text-field>
 													<v-text-field type="password" name="password" v-model="password" :rules="passwordRules"
@@ -87,6 +94,10 @@
 		</v-app>
 	</div>
 	<style>
+		[v-cloak] {
+			display: none;
+		}
+
 		#login-page {
 			/* background-image: url('../assets/hands_joined_team.jpeg'); */
 			background-color: #4c0220;

@@ -66,8 +66,6 @@
 											<v-card-text class="pt-1 pb-0">
 												<v-form action="/login" method="POST" ref="form" v-model="valid" class="text-center">
 													{{ csrfField() }}
-													<v-text-field :value="window.width" required>
-													</v-text-field>
 													<v-text-field name="dni_id" v-model="dni" :rules="dniRules" label="DNI" required>
 													</v-text-field>
 													<v-text-field type="password" name="password" v-model="password" :rules="passwordRules"
@@ -80,8 +78,14 @@
 											</v-card-text>
 
 											<v-card-actions class="mt-4">
-												<v-btn text small color="blue" href="#">¿Olvidaste tu contraseña?</v-btn>
-												<v-btn text small color="green" href="/register">Crea una cuenta!</v-btn>
+												<v-row>
+													<v-col cols="12" sm="8" md="7">
+														<v-btn text small color="blue" href="#">¿Olvidaste tu contraseña?</v-btn>
+													</v-col>
+													<v-col cols="12" sm="5" md="5">
+														<v-btn text small color="green" href="/register">Crea una cuenta!</v-btn>
+													</v-col>
+												</v-row>
 											</v-card-actions>
 										</v-card>
 									</v-col>

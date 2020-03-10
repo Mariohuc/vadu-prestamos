@@ -2,6 +2,10 @@ var app = new Vue({
   vuetify: new Vuetify(),
   data() {
     return {
+			window: {
+        width: 0,
+        height: 0
+      },
       valid: false,
       dni: "",
       dniRules: [
@@ -62,7 +66,10 @@ var app = new Vue({
     },
     isproDistrictsEmpty() {
       return Object.entries(this.proDistricts).length === 0;
-		}
+		},
+		centered() {
+      return this.window.width >= 960 || false;
+    }
 	},
 	mounted(){
 		Vue.nextTick().then(() => {
@@ -70,9 +77,17 @@ var app = new Vue({
     });
 	},
 	created(){
-		this.$vuetify.theme.light = true;
+		window.addEventListener("resize", this.handleResize);
+    this.handleResize();
 	},
+	destroyed() {
+    window.removeEventListener("resize", this.handleResize);
+  },
   methods: {
+		handleResize() {
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
+    },
     validate() {
       if (this.$refs.form.validate()) {
         this.snackbar = true;

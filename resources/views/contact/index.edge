@@ -1,0 +1,139 @@
+@layout('layout.app')
+
+@section('content')
+{{--  my-component tag must be here by default  --}}
+<main-content ref="main_content" inline-template>
+	<v-content>
+		<v-container>
+			<v-row align="center" justify="center">
+				<v-col md="12">
+					<v-card class="elevation-12">
+						<v-card-title>
+							<v-avatar>
+								<img src="{{ assetsUrl('img/contact_avatar.png') }}">
+							</v-avatar>
+							<span class="headline ml-2">Mis contactos</span>
+						</v-card-title>
+						<v-card-text>
+							<v-divider></v-divider>
+							<v-data-table :headers="headers" :items="myContacts" :search="search">
+								<template v-slot:top>
+									<v-toolbar flat color="white">
+										<v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" class="mr-4" single-line
+											hide-details>
+										</v-text-field>
+										<v-spacer></v-spacer>
+										<v-dialog v-model="dialog" persistent max-width="600px">
+											<template v-slot:activator="{ on }">
+												<v-btn color="indigo" dark v-on="on">Añadir contacto</v-btn>
+											</template>
+											<v-card>
+												<v-card-title>
+													<v-avatar color="primary">
+														<v-icon dark>mdi-contacts</v-icon>
+													</v-avatar>
+													<span class="headline ml-2">@{{ formTitle }}</span>
+												</v-card-title>
+
+												<v-card-text>
+													<v-container>
+														<v-form v-model="validContact" ref="form">
+															<v-row>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-model="editedItem.dni_id" :rules="itemRules.dni_id" label="DNI"
+																		:readonly="editedIndex > -1" required>
+																	</v-text-field>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-model="editedItem.name"
+																		@input="editedItem.name = editedItem.name.toUpperCase()" :rules="itemRules.name"
+																		label="Nombres" :readonly="!isEditMode && editedIndex > -1" required>
+																	</v-text-field>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-model="editedItem.surname"
+																		@input="editedItem.surname = editedItem.surname.toUpperCase()"
+																		:rules="itemRules.surname" label="Apellidos"
+																		:readonly="!isEditMode && editedIndex > -1" required>
+																	</v-text-field>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-if="!isEditMode && editedIndex > -1" :value="editedItem.gender"
+																		label="Género" readonly></v-text-field>
+																	<v-select v-if="isEditMode || editedIndex === -1" v-model="editedItem.gender"
+																		:items="genders" :rules="itemRules.gender" label="Género">
+																	</v-select>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-if="!isEditMode && editedIndex > -1" :value="editedItem.department"
+																		label="Departamento" readonly>
+																	</v-text-field>
+																	<v-select v-if="isEditMode || editedIndex === -1"
+																		v-model="editedItem.selectDepartment" :items="departments" item-text="name"
+																		item-value="code" :rules="itemRules.selectDepartment" label="Departamento"
+																		@change="onChangeDepartments" return-object></v-select>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-if="!isEditMode && editedIndex > -1" :value="editedItem.province"
+																		label="Provincia" readonly>
+																	</v-text-field>
+																	<v-select v-if="isEditMode || editedIndex === -1" :disabled="isdepProvincesEmpty"
+																		v-model="editedItem.selectProvince" :items="depProvinces" item-text="name"
+																		item-value="code" :rules="itemRules.selectProvince" label="Provincia"
+																		@change="onChangeProvincies" return-object></v-select>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-if="!isEditMode && editedIndex > -1" :value="editedItem.district"
+																		label="Distrito" readonly>
+																	</v-text-field>
+																	<v-select v-if="isEditMode || editedIndex === -1" :disabled="isproDistrictsEmpty"
+																		v-model="editedItem.selectDistrict" :items="proDistricts" item-text="name"
+																		item-value="code" :rules="itemRules.selectDistrict" label="Distrito" return-object>
+																	</v-select>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-model="editedItem.address" :rules="itemRules.address"
+																		label="Direccion" :readonly="!isEditMode && editedIndex > -1" required>
+																	</v-text-field>
+																</v-col>
+															</v-row>
+														</v-form>
+													</v-container>
+												</v-card-text>
+
+												<v-card-actions>
+													<v-btn v-if="!isEditMode && editedIndex > -1" color="primary" text @click="editItem">Editar
+													</v-btn>
+													<v-spacer></v-spacer>
+													<v-btn color="error" text @click="close">
+														@{{ isEditMode || editedIndex === -1 ? "Cancelar" : "Cerrar"  }}</v-btn>
+													<v-btn v-if="isEditMode || editedIndex === -1" color="success" text @click="saveItem"
+														:disabled="!validContact">Guardar</v-btn>
+												</v-card-actions>
+											</v-card>
+										</v-dialog>
+									</v-toolbar>
+								</template>
+								<template v-slot:item.action="{ item }">
+									<v-btn color="success" @click="viewItem(item)" fab x-small dark>
+										<v-icon>mdi-eye-plus</v-icon>
+									</v-btn>
+									</v-icon>
+								</template>
+							</v-data-table>
+						</v-card-text>
+					</v-card>
+				</v-col>
+			</v-row>
+		</v-container>
+	</v-content>
+</main-content>
+@endsection
+
+@section('content-script')
+<script type="text/javascript">
+	let myContacts = {{{ toJSON(myContacts) }}};
+	let departments = {{{ toJSON(ubigeo_data) }}};
+</script>
+{{ script('js/contact/index') }}
+@endsection

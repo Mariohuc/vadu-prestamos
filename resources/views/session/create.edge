@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Inicio de sesion</title>
+	<link rel="icon" type="image/png" href="{{ assetsUrl('img/logoof01.png') }}" />
+
+	<!-- Custom fonts for this template-->
+	{{ style('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900') }}
+	{{ style('libs/font-4.9.95/css/materialdesignicons.min') }}
+	<!-- Custom styles for this template-->
+	{{ style('libs/vuetify-2.2.14/dist/vuetify.min') }}
+</head>
+
+<body>
+	<div id="app">
+		<v-app id="login-page">
+			<v-content>
+				<v-container class="fill-height" fluid>
+					<v-row align="center" justify="center">
+						<v-col sm="10" md="8">
+							<v-card class="elevation-12">
+								<v-row class="pr-3 pl-3">
+									<v-col cols="12" sm="12" md="6">
+										<v-card>
+											<v-carousel cycle height="450" interval="10000" hide-delimiter-background show-arrows-on-hover>
+												<v-carousel-item v-for="(slide, i) in slides" :key="i">
+													<v-sheet :color="colors[i]" height="100%">
+														<v-row align="center" justify="center">
+															<v-col class="mt-4" cols="10" md="8">
+																<div class="headline font-weight-bold text-center">@{{ slide.title }}</div>
+															</v-col>
+															<v-col cols="10" md="10">
+																<div class="body-1 font-weight-light text-center">@{{ slide.description }}</div>
+															</v-col>
+														</v-row>
+													</v-sheet>
+												</v-carousel-item>
+											</v-carousel>
+											{{--  <v-img src="img/login_inicio_02.png" contain></v-img>  --}}
+										</v-card>
+									</v-col>
+
+									<v-col cols="12" sm="12" md="6">
+										<v-card flat>
+											<h2 class="text-center pt-4 pb-3">Inicio de sesion</h2>
+											@if(flashMessage('error'))
+											<v-card-text class="pt-0 pb-0">
+												<v-alert type="error" dense outlined class="mb-0 body-2">
+													{{ flashMessage('error') }}
+												</v-alert>
+											</v-card-text>
+											@endif
+
+											<v-card-text class="pt-1 pb-0">
+												<v-form action="/login" method="POST" ref="form" v-model="valid" class="text-center">
+													{{ csrfField() }}
+													<v-text-field name="dni_id" v-model="dni" :rules="dniRules" label="DNI" required>
+													</v-text-field>
+													<v-text-field type="password" name="password" v-model="password" :rules="passwordRules"
+														label="Contraseña" required>
+													</v-text-field>
+													<v-btn type="submit" :disabled="!valid" color="success" class="mt-4">
+														<v-icon class="mr-1">mdi-fingerprint</v-icon> Iniciar sesion
+													</v-btn>
+												</v-form>
+											</v-card-text>
+
+											<v-card-actions class="mt-4">
+												<v-btn text small color="blue" href="#">¿Olvidaste tu contraseña?</v-btn>
+												<v-btn text small color="green" href="/register">Crea una cuenta!</v-btn>
+											</v-card-actions>
+										</v-card>
+									</v-col>
+								</v-row>
+							</v-card>
+						</v-col>
+					</v-row>
+				</v-container>
+			</v-content>
+		</v-app>
+	</div>
+	<style>
+		#login-page {
+			/* background-image: url('../assets/hands_joined_team.jpeg'); */
+			background-color: #4c0220;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			position: relative;
+		}
+	</style>
+	<!-- VUE -->
+	{{ script('libs/vue-2.6.11/dist/vue.min') }}
+	<!-- VUETIFY -->
+	{{ script('libs/vuetify-2.2.14/dist/vuetify.min') }}
+
+	{{ script('js/session/create') }}
+
+</body>
+
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+	<meta name="description" content="">
+	<meta name="author" content="">
+
+	<title>Prestamos Rapiditos</title>
+	<link rel="icon" type="image/png" href="{{ assetsUrl('img/logoof01.png') }}" />
+
+	<!-- Custom fonts for this template-->
+	{{ style('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900') }}
+	{{ style('libs/font-4.9.95/css/materialdesignicons.min') }}
+	<!-- VUE STYLES -->
+	{{ style('libs/vuetify-2.2.14/dist/vuetify.min') }}
+</head>
+
+<body>
+	<div id="app">
+		<v-app>
+			<v-overlay :value="overlay">
+				<v-progress-circular indeterminate size="64"></v-progress-circular>
+			</v-overlay>
+			{{--  slide navigator  --}}
+			<v-navigation-drawer v-model="drawer" :color="navigatorColor" :expand-on-hover="expandOnHover"
+				:mini-variant="miniVariant" :left="left" :clipped="$vuetify.breakpoint.lgAndUp" dark app>
+				<v-list dense nav class="py-0">
+					<v-list-item two-line :class="miniVariant && 'px-0'">
+						<v-list-item-avatar>
+							<img v-if="!!profile_photo" :src="profile_photo">
+							<img v-if="!profile_photo" src="{{ assetsUrl('img/default_perfil.jpg') }}">
+						</v-list-item-avatar>
+
+						<v-list-item-content>
+							<v-list-item-title>@{{ userloggedin.name }}</v-list-item-title>
+							<v-list-item-subtitle>@{{ userloggedin.surname }}</v-list-item-subtitle>
+						</v-list-item-content>
+					</v-list-item>
+
+					<v-divider></v-divider>
+					<v-list-item-group v-model="selectedNavigationItem">
+						<v-list-item v-for="item in navigatorItems" :key="item.title" :href="item.href">
+							<v-list-item-icon>
+								<v-icon>@{{ item.icon }}</v-icon>
+							</v-list-item-icon>
+
+							<v-list-item-content>
+								<v-list-item-title>@{{ item.title }}</v-list-item-title>
+							</v-list-item-content>
+						</v-list-item>
+					</v-list-item-group>
+				</v-list>
+			</v-navigation-drawer>
+			{{--  main topbar  --}}
+			<v-app-bar :color="appBarColor" dense dark :clipped-left="$vuetify.breakpoint.lgAndUp" app>
+				<v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+
+				<v-toolbar-title>Prestamos Rapiditos</v-toolbar-title>
+
+				<v-spacer></v-spacer>
+
+				<v-menu left bottom>
+					<template v-slot:activator="{ on }">
+						<v-btn icon v-on="on">
+							<v-icon>mdi-dots-vertical</v-icon>
+						</v-btn>
+					</template>
+
+					<v-list>
+						<v-list-item v-for="option in appbarOptions" :key="option.name" :href="option.href">
+							<v-list-item-icon>
+								<v-icon v-text="option.icon"></v-icon>
+							</v-list-item-icon>
+							<v-list-item-content>
+								<v-list-item-subtitle v-text="option.name">
+								</v-list-item-subtitle>
+							</v-list-item-content>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+			</v-app-bar>
+
+			{{--  main content in HTML --}}
+			@!section('content')
+
+
+
+		</v-app>
+	</div>
+	<style>
+		#login-page {
+			/* background-image: url('../assets/hands_joined_team.jpeg'); */
+			background-color: #8f2c2c;
+			height: 100vh;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			position: relative;
+		}
+	</style>
+	<!-- VUE -->
+	{{ script('libs/vue-2.6.11/dist/vue.min') }}
+	<!-- VUETIFY -->
+	{{ script('libs/vuetify-2.2.14/dist/vuetify.min') }}
+	{{--  Axios for making HTTP request  --}}
+	{{ script('libs/axios-0.19.2/dist/axios.min') }}
+
+	<script type="text/javascript">
+		String.prototype.capitalize = function() {
+				return this.charAt(0).toUpperCase() + this.slice(1);
+		}
+	</script>
+	{{--  Javascript scripting for main content  --}}
+	@!section('content-script')
+
+	<script type="text/javascript">
+		let userloggedin = {{{ toJSON( auth.user ) }}};
+	</script>
+	{{ script('js/layout/app') }}
+
+</body>
+
+</html>

@@ -1,0 +1,185 @@
+@layout('layout.app')
+
+@section('content')
+{{--  my-component tag must be here by default  --}}
+<main-content ref="main_content" inline-template>
+	<v-content>
+		<v-container>
+			<v-row justify="center">
+				<v-col cols="12" sm="6" md="5">
+					<v-card class="elevation-12">
+						<v-card-title>
+							<v-avatar color="indigo">
+								<img src="{{ assetsUrl('img/loan_avatar_2.png') }}">
+							</v-avatar>
+							<span class="headline ml-2">Mi prestamo</span>
+						</v-card-title>
+						<v-card-text>
+							<v-divider></v-divider>
+							<v-container>
+								<v-form v-model="validLoan">
+									<v-row>
+										<v-col cols="12" sm="6" md="6">
+											<v-text-field v-model="editedItem.amount" :rules="itemRules.amount" label="Monto prestado"
+												:readonly="!editedLoanMode">
+											</v-text-field>
+										</v-col>
+										<v-col cols="12" sm="6" md="6">
+											<v-text-field v-model="editedItem.monthly_interest" :rules="itemRules.monthly_interest"
+												label="Interes mensual %" :readonly="!editedLoanMode" :hint="hint_monthly_interest">
+											</v-text-field>
+										</v-col>
+										<v-col cols="12" sm="6" md="6">
+											<v-menu v-model="menuCreationDate" :close-on-content-click="false" :nudge-right="40"
+												transition="scale-transition" offset-y min-width="290px">
+												<template v-slot:activator="{on, off}">
+													<v-text-field v-model="editedItem.creation_date" label="Prestamo se apertura"
+														prepend-icon="mdi-calendar" readonly v-on="editedLoanMode? on : off"></v-text-field>
+												</template>
+												<v-date-picker v-model="editedItem.creation_date" @input="setCreationDateofLoan">
+												</v-date-picker>
+											</v-menu>
+										</v-col>
+										<v-col cols="12" sm="6" md="6">
+											<v-text-field v-model="editedItem.interest_delivery_day" label="Dia de entrega por mes"
+												:readonly="!editedLoanMode">
+											</v-text-field>
+										</v-col>
+										<v-col cols="12" sm="6" md="6">
+											<v-menu v-model="menuExpirationDate" :close-on-content-click="false" :nudge-right="40"
+												transition="scale-transition" offset-y min-width="290px">
+												<template v-slot:activator="{ on, off }">
+													<v-text-field v-model="editedItem.expiration_date" label="Prestamo vence"
+														prepend-icon="mdi-calendar" readonly v-on="editedLoanMode? on : off"></v-text-field>
+												</template>
+												<v-date-picker v-model="editedItem.expiration_date" @input="menuExpirationDate = false">
+												</v-date-picker>
+											</v-menu>
+										</v-col>
+										<v-col cols="12" sm="6" md="6">
+											<v-select v-model="editedItem.relationship_borrowers" :items="itemRules.relationship_borrowers"
+												label="Tipo de relacion (entre Prestatarios)" :readonly="!editedLoanMode">
+											</v-select>
+										</v-col>
+										<v-col cols="12" sm="6" md="6">
+											<v-select v-model="editedItem.loan_status" :items="itemRules.loan_status"
+												label="Estado de prestamo" :readonly="!editedLoanMode">
+											</v-select>
+										</v-col>
+									</v-row>
+								</v-form>
+							</v-container>
+						</v-card-text>
+						<v-card-actions style="position: relative">
+							<v-btn v-if="!editedLoanMode" color="primary" @click="editedLoanMode = true">
+								<v-icon class="mr-1">mdi-pencil</v-icon> Editar
+							</v-btn>
+							<v-btn v-if="editedLoanMode" color="secondary" @click="cancelLoanEdition">
+								<v-icon class="mr-1">mdi-close-circle</v-icon> Cancelar
+							</v-btn>
+							<v-btn v-if="editedLoanMode" color="success" :disabled="!validLoan" @click="saveLoan">
+								<v-icon class="mr-1">mdi-content-save-edit</v-icon> Guardar
+							</v-btn>
+							<v-spacer></v-spacer>
+							{{--  float button  --}}
+							<v-tooltip bottom>
+								<template v-slot:activator="{ on }">
+									<v-btn v-on="on" color="green accent-4" @click="showGeneratedPDF" dark absolute top right fab>
+										<v-icon>mdi-file-export</v-icon>
+									</v-btn>
+								</template>
+								<span>Genera un documento de contrato de prestamo!</span>
+							</v-tooltip>
+							<v-dialog v-model="generatedPDFDialog" persistent max-width="700px">
+								<v-card>
+									<v-card-actions>
+										<v-btn color="success" @click="generatePdf" text>Re-generar</v-btn>
+										<v-spacer></v-spacer>
+										<v-btn color="error" @click="closePDFDialog" text>Cerrar</v-btn>
+									</v-card-actions>
+									<v-card-text>
+										<iframe style="width: 100%; height: 942px" :src="PDFblobUrl"></iframe>
+									</v-card-text>
+
+								</v-card>
+							</v-dialog>
+						</v-card-actions>
+
+					</v-card>
+				</v-col>
+
+				<v-col cols="12" sm="6" md="7">
+					<v-card class="elevation-12">
+						<v-card-title>
+							<v-avatar color="indigo">
+								<img src="{{ assetsUrl('img/borrow_avatar_2.jpg') }}">
+							</v-avatar>
+							<span class="headline ml-2">Mis deudores</span>
+						</v-card-title>
+						<v-card-text>
+							<v-divider></v-divider>
+							<v-data-table :headers="headers" :items="loanDetails" :search="search" :loading="loadingLoanDetails"
+								loading-text="Cargando... Espere por favor" height="330">
+								<template v-slot:top>
+									<v-toolbar flat color="white">
+										<v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" class="mr-4" single-line
+											hide-details>
+										</v-text-field>
+										<v-spacer></v-spacer>
+										<v-dialog v-model="borrowerDialog" persistent max-width="600px">
+											<template v-slot:activator="{ on }">
+												<v-btn color="indigo" dark v-on="on">Añadir deudor(s)</v-btn>
+											</template>
+											<v-card>
+												<v-card-title>
+													<span class="headline">Añadir deudor(s)</span>
+												</v-card-title>
+
+												<v-card-text>
+													<v-container>
+														<v-form v-model="validBorrowers">
+															<v-row>
+																<v-col cols="12" sm="12" md="12">
+																	<v-autocomplete v-model="selectContacts" :items="myContacts" item-value="dni_id"
+																		item-text="fullname" dense chips small-chips label="Elige de tus contactos" multiple
+																		solo return-object></v-autocomplete>
+																</v-col>
+															</v-row>
+														</v-form>
+													</v-container>
+												</v-card-text>
+
+												<v-card-actions>
+													<v-spacer></v-spacer>
+													<v-btn color="red darken-1" @click="closeBorrowerDialog" text>Cancelar</v-btn>
+													<v-btn color="blue darken-1" @click="saveBorrowers" :disabled="!validBorrowers" text>Guardar
+													</v-btn>
+												</v-card-actions>
+											</v-card>
+										</v-dialog>
+									</v-toolbar>
+								</template>
+								<template v-slot:item.action="{ item }">
+									<v-btn color="primary" fab x-small dark>
+										<v-icon>mdi-eye</v-icon>
+									</v-btn>
+									</v-icon>
+								</template>
+							</v-data-table>
+						</v-card-text>
+					</v-card>
+				</v-col>
+			</v-row>
+		</v-container>
+	</v-content>
+</main-content>
+@endsection
+
+@section('content-script')
+<script type="text/javascript">
+	const loan = {{{ toJSON(loan) }}};
+	let loanDetails = {{{ toJSON(loanDetails) }}};
+</script>
+{{ script('libs/jspdf-1.5.3/dist/jspdf.min') }}
+{{ script('js/loanheader/readone') }}
+@endsection

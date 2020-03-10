@@ -1,0 +1,49 @@
+@layout('layout.app')
+
+@section('content')
+{{--  my-component tag must be here by default  --}}
+<main-content ref="main_content" inline-template>
+	<v-content>
+		<v-container>
+			{{--  Since here, you can start to do your HTML code for content  --}}
+			<v-row align="center" justify="center">
+				<v-col md="12">
+					<v-card class="elevation-12">
+						<v-card-title flat>
+							<span class="headline">Calendario de eventos</span>
+						</v-card-title>
+						<v-card-text>
+							<v-divider class="mb-2"></v-divider>
+							<v-sheet tile height="54" color="grey lighten-3" class="d-flex">
+								<v-btn icon class="ma-2" @click="$refs.calendar.prev()">
+									<v-icon>mdi-chevron-left</v-icon>
+								</v-btn>
+								<v-spacer></v-spacer>
+								<v-chip label color="primary" large> @{{ calendar_title }} </v-chip>
+								<v-spacer></v-spacer>
+								<v-btn icon class="ma-2" @click="$refs.calendar.next()">
+									<v-icon>mdi-chevron-right</v-icon>
+								</v-btn>
+							</v-sheet>
+						</v-card-text>
+						<v-card-text>
+							<v-sheet height="600">
+								<v-calendar ref="calendar" v-model="value" :weekdays="weekday" :type="type" :events="events"
+									:event-overlap-mode="mode" :event-overlap-threshold="30" :event-color="getEventColor"
+									@change="getEvents">
+								</v-calendar>
+							</v-sheet>
+						</v-card-text>
+					</v-card>
+				</v-col>
+			</v-row>
+
+		</v-container>
+	</v-content>
+</main-content>
+@endsection
+
+@section('content-script')
+{{ script('libs/moment-2.24.0/min/moment-with-locales.min') }}
+{{ script('js/dashboard/welcome') }}
+@endsection

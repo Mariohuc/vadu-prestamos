@@ -1,0 +1,119 @@
+@layout('layout.app')
+
+@section('content')
+{{--  my-component tag must be here by default  --}}
+<main-content ref="main_content" inline-template>
+	<v-content>
+		<v-container>
+			<v-row align="center" justify="center">
+				<v-col md="12">
+					<v-card class="elevation-12">
+						<v-card-title>
+							<v-avatar color="indigo">
+								<img src="{{ assetsUrl('img/loan_avatar_2.png') }}">
+							</v-avatar>
+							<span class="headline ml-2">Mis Prestamos</span>
+						</v-card-title>
+						<v-card-text>
+							<v-divider></v-divider>
+							<v-data-table :headers="headers" :items="loans" :search="search">
+								<template v-slot:top>
+									<v-toolbar flat color="white">
+										<v-spacer></v-spacer>
+										<v-text-field v-model="search" append-icon="mdi-magnify" label="Buscar" class="mr-4" single-line
+											hide-details>
+										</v-text-field>
+										<v-dialog v-model="dialog" persistent max-width="600px">
+											<template v-slot:activator="{ on }">
+												<v-btn color="indigo" dark v-on="on">Añadir prestamo</v-btn>
+											</template>
+											<v-card>
+												<v-card-title>
+													<span class="headline">Nuevo Prestamo</span>
+												</v-card-title>
+
+												<v-card-text>
+													<v-container>
+														<v-form v-model="validLoan" ref="form">
+															<v-row>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-model="editedItem.amount" :rules="itemRules.amount"
+																		label="Monto a prestar">
+																	</v-text-field>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-model="editedItem.monthly_interest"
+																		:rules="itemRules.monthly_interest" label="Interes mensual %"
+																		:hint="hint_monthly_interest">
+																	</v-text-field>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-menu v-model="menuCreationDate" :close-on-content-click="false" :nudge-right="40"
+																		transition="scale-transition" offset-y min-width="290px">
+																		<template v-slot:activator="{ on }">
+																			<v-text-field v-model="editedItem.creation_date" label="Prestamo se apertura"
+																				prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+																		</template>
+																		<v-date-picker v-model="editedItem.creation_date" @input="setCreationDateofLoan">
+																		</v-date-picker>
+																	</v-menu>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-text-field v-model="editedItem.interest_delivery_day"
+																		label="Dia de entrega por mes">
+																	</v-text-field>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-menu v-model="menuExpirationDate" :close-on-content-click="false" :nudge-right="40"
+																		transition="scale-transition" offset-y min-width="290px">
+																		<template v-slot:activator="{ on }">
+																			<v-text-field v-model="editedItem.expiration_date" label="Prestamo vence"
+																				prepend-icon="mdi-calendar" readonly v-on="on"></v-text-field>
+																		</template>
+																		<v-date-picker v-model="editedItem.expiration_date"
+																			@input="menuExpirationDate = false">
+																		</v-date-picker>
+																	</v-menu>
+																</v-col>
+																<v-col cols="12" sm="6" md="6">
+																	<v-select v-model="editedItem.relationship_borrowers"
+																		:items="itemRules.relationship_borrowers"
+																		label="Tipo de relacion (entre Prestatarios)">
+																	</v-select>
+																</v-col>
+															</v-row>
+														</v-form>
+													</v-container>
+												</v-card-text>
+
+												<v-card-actions>
+													<v-spacer></v-spacer>
+													<v-btn color="error" text @click="close">Cancelar</v-btn>
+													<v-btn color="success" text @click="save" :disabled="!validLoan">Guardar</v-btn>
+												</v-card-actions>
+											</v-card>
+										</v-dialog>
+									</v-toolbar>
+								</template>
+								<template v-slot:item.action="{ item }">
+									<v-btn color="primary" :href="'/loanheaders/' + item.id" fab x-small dark>
+										<v-icon>mdi-eye</v-icon>
+									</v-btn>
+									</v-icon>
+								</template>
+							</v-data-table>
+						</v-card-text>
+					</v-card>
+				</v-col>
+			</v-row>
+		</v-container>
+	</v-content>
+</main-content>
+@endsection
+
+@section('content-script')
+<script type="text/javascript">
+	let loans = {{{ toJSON(loans) }}};
+</script>
+{{ script('js/loanheader/index') }}
+@endsection

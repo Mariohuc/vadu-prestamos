@@ -6,6 +6,9 @@ const Env = use('Env')
 /** @type {import('@adonisjs/ignitor/src/Helpers')} */
 const Helpers = use('Helpers')
 
+const Url = require('url-parse')
+const DATABASE_URL = new Url(Env.get('DATABASE_URL'))
+
 module.exports = {
   /*
   |--------------------------------------------------------------------------
@@ -71,11 +74,11 @@ module.exports = {
   pg: {
     client: 'pg',
     connection: {
-      host: Env.get('DB_HOST', 'tuffi.db.elephantsql.com'),
-      port: Env.get('DB_PORT', '5432'),
-      user: Env.get('DB_USER', 'avwdpsmg'),
-      password: Env.get('DB_PASSWORD', 'BrfpZqYp9OoH0V_SPVqIajLSEYolz_Oq'),
-      database: Env.get('DB_DATABASE', 'avwdpsmg')
+      host: Env.get('DB_HOST', DATABASE_URL.hostname),
+      port: Env.get('DB_PORT', DATABASE_URL.port),
+      user: Env.get('DB_USER', DATABASE_URL.username),
+      password: Env.get('DB_PASSWORD', DATABASE_URL.password),
+      database: Env.get('DB_DATABASE', DATABASE_URL.username)
     }
   }
 }

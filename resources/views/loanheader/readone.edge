@@ -3,7 +3,7 @@
 @section('content')
 {{--  my-component tag must be here by default  --}}
 <main-content ref="main_content" inline-template>
-	<v-content>
+	<v-main>
 		<v-container>
 			<v-row justify="center">
 				<v-col cols="12" sm="6" md="5">
@@ -171,7 +171,7 @@
 				</v-col>
 			</v-row>
 		</v-container>
-	</v-content>
+	</v-main>
 </main-content>
 @endsection
 
@@ -180,6 +180,6 @@
 	const loan = {{{ toJSON(loan) }}};
 	let loanDetails = {{{ toJSON(loanDetails) }}};
 </script>
-{{ script('libs/jspdf-1.5.3/dist/jspdf.min') }}
+{{ script('https://cdn.jsdelivr.net/npm/jspdf@1.5.3/dist/jspdf.min.js') }}
 {{ script('js/loanheader/readone') }}
 @endsection

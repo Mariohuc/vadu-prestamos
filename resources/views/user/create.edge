@@ -13,21 +13,22 @@
 
 	<!-- Custom fonts for this template-->
 	{{ style('https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900') }}
-	{{ style('libs/font-4.9.95/css/materialdesignicons.min') }}
+	{{ style('https://cdn.jsdelivr.net/npm/@mdi/font@5.3.45/css/materialdesignicons.min.css') }}
 	<!-- VUE STYLES -->
-	{{ style('libs/vuetify-2.2.14/dist/vuetify.min') }}
-	{{ style('libs/cropperjs-1.5.6/dist/cropper.min') }}
-	{{ style('libs/nprogress-0.2.0/nprogress') }}
+	{{ style('https://cdn.jsdelivr.net/npm/vuetify@2.3.0/dist/vuetify.min.css') }}
+	{{ style('https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css') }}
+
+	{{ style('https://cdn.jsdelivr.net/npm/cropperjs@1.5.7/dist/cropper.min.css') }}
 </head>
 
 <body>
-	{{ script('libs/nprogress-0.2.0/nprogress') }}
+	{{ script('https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.js') }}
 	<script type="text/javascript">
 		NProgress.start();
 	</script>
 	<div id="app">
 		<v-app id="login-page" v-cloak>
-			<v-content>
+			<v-main>
 				<v-container :fill-height="centered" :fluid="centered">
 					<v-row align="center" justify="center">
 						<v-col sm="10" md="8">
@@ -129,7 +130,7 @@
 						</v-col>
 					</v-row>
 				</v-container>
-			</v-content>
+			</v-main>
 		</v-app>
 	</div>
 	<style>
@@ -148,12 +149,12 @@
 		}
 	</style>
 	<!-- VUE -->
-	{{ script('libs/vue-2.6.11/dist/vue.min') }}
+	{{ script('https://cdn.jsdelivr.net/npm/vue@2.6.11/dist/vue.min.js') }}
 	<!-- VUETIFY -->
-	{{ script('libs/vuetify-2.2.14/dist/vuetify.min') }}
+	{{ script('https://cdn.jsdelivr.net/npm/vuetify@2.3.0/dist/vuetify.min.js') }}
 
-	{{ script('libs/cropperjs-1.5.6/dist/cropper.min') }}
-	{{ script('libs/lodash-4.17.15/lodash.min') }}
+	{{ script('https://cdn.jsdelivr.net/npm/cropperjs@1.5.7/dist/cropper.min.js') }}
+	{{ script('https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js') }}
 	{{--  This script is to fetch all object from controller to javascript variables into the edge view  --}}
 	<script type="text/javascript">
 		let departments = {{{ toJSON(ubigeo_data) }}};

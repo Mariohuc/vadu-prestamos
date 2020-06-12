@@ -3,7 +3,7 @@
 @section('content')
 {{--  my-component tag must be here by default  --}}
 <main-content ref="main_content" inline-template>
-	<v-content>
+	<v-main>
 		<v-container>
 			{{--  Since here, you can start to do your HTML code for content  --}}
 			<v-row align="center" justify="center">
@@ -39,11 +39,11 @@
 			</v-row>
 
 		</v-container>
-	</v-content>
+	</v-main>
 </main-content>
 @endsection
 
 @section('content-script')
-{{ script('libs/moment-2.24.0/min/moment-with-locales.min') }}
+{{ script('https://cdn.jsdelivr.net/npm/moment@2.26.0/min/moment-with-locales.min.js') }}
 {{ script('js/dashboard/welcome') }}
 @endsection
